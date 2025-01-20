@@ -1,0 +1,1056 @@
+{
+	"info": {
+		"_postman_id": "f6c9ef45-4fcb-48ab-8f04-77f511b2f797",
+		"name": "Weather API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29901660"
+	},
+	"item": [
+		{
+			"name": "Current Weather",
+			"item": [
+				{
+					"name": "Current Weather With ZIP code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check country & region\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.location.region).to.eql(\"Indiana\");\r",
+									"    pm.expect(jsonData.location.country).to.eql(\"USA\");\r",
+									"    pm.expect(jsonData.current).to.have.property(\"last_updated\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/current.json?Key={{API_KEY}}&q=47722",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"current.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "47722"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current Weather With Geographic coordinates",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check country & region\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.location.region).to.eql(\"Ile-de-France\");\r",
+									"    pm.expect(jsonData.location.country).to.eql(\"France\");\r",
+									"    pm.expect(jsonData).to.have.property(\"location\");\r",
+									"    pm.expect(jsonData).to.have.property(\"current\");\r",
+									"\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/current.json?Key={{API_KEY}}&q=48.8567,2.3508",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"current.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "48.8567,2.3508"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Current Weather Lang & City Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									" var jsonData = pm.response.json();\r",
+									"pm.test(\"Check country & region\", () => {\r",
+									"   \r",
+									"    pm.expect(jsonData.location.region).to.eql(\"Ile-de-France\");\r",
+									"    pm.expect(jsonData.location.country).to.eql(\"France\");\r",
+									"});\r",
+									"\r",
+									"// initializing the location variable\r",
+									"pm.test(\"Chain Request With forecast\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    let lat = jsonData.location.lat;\r",
+									"    let lon = jsonData.location.lon;\r",
+									"    let location = `${lat},${lon}`\r",
+									"    if(pm.response.code === 200){\r",
+									"        pm.collectionVariables.set(\"location\",location);\r",
+									"    }\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/current.json?Key={{API_KEY}}&q=paris&lang=ar",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"current.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "paris"
+								},
+								{
+									"key": "lang",
+									"value": "ar"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Forcast",
+			"item": [
+				{
+					"name": "Forcast 2 days",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var forecast = jsonData.forecast; // Define forecast variable\r",
+									"// Convert the JSON object to a string for searching\r",
+									"let responseString = JSON.stringify(jsonData);\r",
+									"var date = \"2025-01-21 23:00\";\r",
+									"var humidity = \"humidity\";\r",
+									"pm.test(\"Retrive 2 days data\",  () => {\r",
+									"   pm.expect(responseString).to.include(date);\r",
+									"   pm.expect(responseString).to.include(humidity);\r",
+									"   pm.expect(forecast).to.be.an('object'); // Validate forecast data is an object\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/forecast.json?Key={{API_KEY}}&q={{location}}&days=2&lang=ar",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"forecast.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								},
+								{
+									"key": "days",
+									"value": "2"
+								},
+								{
+									"key": "lang",
+									"value": "ar"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forcast Air aqi",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Convert the JSON object to a string for searching\r",
+									"var jsonData = pm.response.json();\r",
+									"let responseString = JSON.stringify(jsonData);\r",
+									"var searchText = \"air_quality\";\r",
+									"pm.test(\"Search For air_quality\", () => {\r",
+									"   pm.expect(responseString).to.include(searchText);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/forecast.json?Key={{API_KEY}}&q={{location}}&days=2&lang=ar&aqi=yes",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"forecast.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								},
+								{
+									"key": "days",
+									"value": "2"
+								},
+								{
+									"key": "lang",
+									"value": "ar"
+								},
+								{
+									"key": "aqi",
+									"value": "yes"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Forcast Weather dt & hour",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Convert the JSON object to a string for searching\r",
+									"var jsonData = pm.response.json();\r",
+									"let responseString = JSON.stringify(jsonData);\r",
+									"var searchText = \"2025-01-30 06:00\";\r",
+									"pm.test(\"Search For air_quality\", () => {\r",
+									"   pm.expect(responseString).to.include(searchText);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/forecast.json?Key={{API_KEY}}&dt=2025-01-30&hour=6&q={{location}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"forecast.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "lang",
+									"value": "ar",
+									"disabled": true
+								},
+								{
+									"key": "dt",
+									"value": "2025-01-30"
+								},
+								{
+									"key": "hour",
+									"value": "6"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Alerts",
+			"item": [
+				{
+					"name": "Alerts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"// Convert the JSON object to a string for searching\r",
+									"var jsonData = pm.response.json();\r",
+									"let responseString = JSON.stringify(jsonData);\r",
+									"var searchText = \"alerts\";\r",
+									"pm.test(\"Search For alerts\",  () => {\r",
+									"   pm.expect(responseString).to.include(searchText);\r",
+									"   pm.expect(responseString).to.include(\"severity\");\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/alerts.json?key={{API_KEY}}&q={{location}}&alerts=yes",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"alerts.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								},
+								{
+									"key": "alerts",
+									"value": "yes"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search City Name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Convert the JSON object to a string for searching\r",
+									"var jsonData = pm.response.json();\r",
+									"let responseString = JSON.stringify(jsonData);\r",
+									"pm.test(\"Search City By Name\", () => {\r",
+									"   pm.expect(responseString).to.include(\"Missouri\");\r",
+									"   pm.expect(responseString).to.include(\"Ohio\");\r",
+									"   pm.expect(responseString).to.include(\"lat\");\r",
+									"   pm.expect(responseString).to.include(\"lon\");\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/search.json?key={{API_KEY}}&q=Springfield",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"search.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "Springfield"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "History",
+			"item": [
+				{
+					"name": "With dt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Paris History on 19-01\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    let conStr = JSON.stringify(jsonData);\r",
+									"    pm.expect(conStr).to.include(\"Paris\");\r",
+									"    pm.expect(conStr).to.include(\"hour\");\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/history.json?key={{API_KEY}}&q={{location}}&dt=2025-01-19",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"history.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								},
+								{
+									"key": "dt",
+									"value": "2025-01-19"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Handling",
+			"item": [
+				{
+					"name": "Without KEY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"API key is invalid or not provided\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql(\"API key is invalid or not provided.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/current.json",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"current.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Without q",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Parameter q is missing\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql(\"Parameter q is missing.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/current.json?Key={{API_KEY}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"current.json"
+							],
+							"query": [
+								{
+									"key": "Key",
+									"value": "{{API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "History without the dt or end_dt",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"missing dt or end_dt parameters\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql( \"dt or end_dt parameter should be in yyyy-MM-dd format and on or after 1st Jan, 2010 (2010-01-01).\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/history.json?key={{API_KEY}}&q={{location}}",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"history.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "History dt from the last year",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Limited API Key\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql(\"API key is limited to get history data. Please check our pricing page and upgrade to higher plan.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/history.json?key={{API_KEY}}&q={{location}}&dt=2024-01-05",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"history.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{location}}"
+								},
+								{
+									"key": "dt",
+									"value": "2024-01-05"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Key",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"API key has been disabled\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql(\"API key has been disabled.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/search.json?key={{Invalid_Key}}&q=Springfield",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"search.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{Invalid_Key}}"
+								},
+								{
+									"key": "q",
+									"value": "Springfield"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"No matching location found\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.error.message).to.eql(\"No matching location found.\");\r",
+									"}); "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Base_URL}}/history.json?key={{API_KEY}}&q={{No_Location_Found}}&dt=2025-01-05",
+							"host": [
+								"{{Base_URL}}"
+							],
+							"path": [
+								"history.json"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{API_KEY}}"
+								},
+								{
+									"key": "q",
+									"value": "{{No_Location_Found}}"
+								},
+								{
+									"key": "dt",
+									"value": "2025-01-05"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"if (pm.response.code === 400) {\r",
+					"    pm.test(\"Bad Request\", () => {\r",
+					"        //pm.response.to.have.status(400);\r",
+					"        pm.collectionVariables.set(\"Bad_Request\", pm.info.requestName);\r",
+					"        //console.log(\"Bad_Request updated to:\", pm.info.requestName);\r",
+					"    })\r",
+					"\r",
+					"};\r",
+					"\r",
+					"if (pm.response.code === 401) {\r",
+					"    pm.test(\"Unauthorized\", () => {\r",
+					"        //pm.response.to.have.status(401);\r",
+					"        pm.collectionVariables.set(\"Unauthorized\", pm.info.requestName);\r",
+					"    })\r",
+					"};\r",
+					"\r",
+					"if (pm.response.code === 403) {\r",
+					"    pm.test(\"Forbidden\", () => {\r",
+					"        //pm.response.to.have.status(403);\r",
+					"        pm.collectionVariables.set(\"Forbidden\", pm.info.requestName);\r",
+					"        //console.log(\"Bad_Request updated to:\", pm.info.requestName);\r",
+					"    })\r",
+					"};\r",
+					"\r",
+					"\r",
+					"if (pm.info.requestName !== pm.collectionVariables.get(\"Unauthorized\") && pm.info.requestName !== pm.collectionVariables.get(\"Bad_Request\") && pm.info.requestName !== pm.collectionVariables.get(\"Forbidden\")) {\r",
+					"    pm.test(\"Status code is okey\", () => {\r",
+					"        pm.expect(pm.response.code).to.be.oneOf([200, 201, 202]);\r",
+					"    });\r",
+					"}\r",
+					"else {\r",
+					"    pm.test.skip(\"Test skiped for this request\");\r",
+					"}\r",
+					";\r",
+					"\r",
+					"pm.test(\"Search for Null\", () => {\r",
+					"    pm.expect(pm.response.body).not.eql(null, \"it is empty\");\r",
+					"});\r",
+					"\r",
+					"if (pm.info.requestName !== pm.collectionVariables.get(\"Unauthorized\") && pm.info.requestName !== pm.collectionVariables.get(\"Bad_Request\") && pm.info.requestName !== pm.collectionVariables.get(\"Forbidden\")) {\r",
+					"    if (pm.request.url.toString().includes(\"/current.json\") || pm.request.url.toString().includes(\"/forecast.json\") ) {\r",
+					"        pm.test(\"Validate main data fields and types\", () => {\r",
+					"            const jsonData = pm.response.json(); \r",
+					"        \r",
+					"\r",
+					"            pm.expect(jsonData).to.have.property(\"current\").and.to.be.an(\"object\");\r",
+					"            pm.expect(jsonData).to.have.property(\"location\").and.to.be.a(\"object\");\r",
+					"\r",
+					"            \r",
+					"            const current = jsonData.current;\r",
+					"            const location1 = jsonData.location;\r",
+					"\r",
+					"            pm.expect(location1).to.have.property(\"name\").and.to.be.a(\"string\");\r",
+					"            pm.expect(location1).to.have.property(\"lat\").and.to.be.a(\"number\");\r",
+					"            pm.expect(location1).to.have.property(\"lon\").and.to.be.a(\"number\");\r",
+					"\r",
+					"    \r",
+					"            pm.expect(current).to.have.property(\"last_updated\").and.to.be.a(\"string\");\r",
+					"            pm.expect(current).to.have.property(\"last_updated_epoch\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"temp_c\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"temp_f\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"feelslike_c\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"feelslike_f\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"windchill_c\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"windchill_f\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"heatindex_c\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"heatindex_f\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"dewpoint_c\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"dewpoint_f\").and.to.be.a(\"number\");\r",
+					"\r",
+					"            pm.expect(current).to.have.property(\"condition\");\r",
+					"            pm.expect(current.condition).to.have.property(\"text\").and.to.be.a(\"string\");\r",
+					"            pm.expect(current.condition).to.have.property(\"icon\").and.to.be.a(\"string\");\r",
+					"            pm.expect(current.condition).to.have.property(\"code\").and.to.be.a(\"number\");\r",
+					"\r",
+					"            pm.expect(current).to.have.property(\"wind_mph\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"wind_kph\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"wind_degree\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"wind_dir\").and.to.be.a(\"string\");\r",
+					"            pm.expect(current).to.have.property(\"pressure_mb\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"pressure_in\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"precip_mm\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"precip_in\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"humidity\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"cloud\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"is_day\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"uv\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"gust_mph\").and.to.be.a(\"number\");\r",
+					"            pm.expect(current).to.have.property(\"gust_kph\").and.to.be.a(\"number\");\r",
+					"\r",
+					"\r",
+					"    });\r",
+					"    }\r",
+					"}\r",
+					"\r",
+					"if (pm.request.url.toString().includes(\"/forecast.json\")){\r",
+					"        pm.test(\"Validate forecast data fields and types for all days\", () => {\r",
+					"            const jsonData = pm.response.json();\r",
+					"            pm.expect(jsonData).to.have.property(\"forecast\").and.to.be.an(\"object\");\r",
+					"\r",
+					"            const forecast = jsonData.forecast;     \r",
+					"            pm.expect(forecast).to.have.property(\"forecastday\").and.to.be.an(\"array\");\r",
+					"           \r",
+					"            const firstDay = jsonData.forecast.forecastday\r",
+					"                // Loop over all forecast days\r",
+					"            firstDay.forEach((day, index) => {\r",
+					"               ///console.log(`Validating day ${index + 1}`);\r",
+					"\r",
+					"                // Validate the \"day\" object\r",
+					"                pm.expect(day).to.have.property(\"day\").and.to.be.an(\"object\");\r",
+					"                pm.expect(day.day).to.have.property(\"avgtemp_c\").and.to.be.a(\"number\");\r",
+					"                pm.expect(day.day).to.have.property(\"maxtemp_c\").and.to.be.a(\"number\");\r",
+					"                pm.expect(day.day).to.have.property(\"avgvis_km\").and.to.be.a(\"number\");\r",
+					"\r",
+					"                // Validate the \"astro\" object\r",
+					"                pm.expect(day).to.have.property(\"astro\").and.to.be.an(\"object\");\r",
+					"                pm.expect(day.astro).to.have.property(\"moonrise\").and.to.be.a(\"string\");\r",
+					"                pm.expect(day.astro).to.have.property(\"moon_phase\").and.to.be.a(\"string\");\r",
+					"                pm.expect(day.astro).to.have.property(\"moon_illumination\").and.to.be.a(\"number\");\r",
+					"                pm.expect(day.astro).to.have.property(\"is_sun_up\").and.to.be.a(\"number\");\r",
+					"\r",
+					"                // Validate the \"hour\" array\r",
+					"                pm.expect(day).to.have.property(\"hour\").and.to.be.an(\"array\");\r",
+					"\r",
+					"                const hour = day.hour\r",
+					"                // Loop over all hours in the day\r",
+					"                hour.forEach((hour, hourIndex) => {\r",
+					"                    //console.log(`Validating hour ${hourIndex + 1} of day ${index + 1}`);\r",
+					"\r",
+					"                    pm.expect(hour).to.have.property(\"time_epoch\").and.to.be.a(\"number\");\r",
+					"                    pm.expect(hour).to.have.property(\"wind_degree\").and.to.be.a(\"number\");\r",
+					"                    pm.expect(hour).to.have.property(\"temp_c\").and.to.be.a(\"number\");\r",
+					"                    pm.expect(hour).to.have.property(\"humidity\").and.to.be.a(\"number\");\r",
+					"               });\r",
+					"             \r",
+					"        });\r",
+					"    });\r",
+					"}\r",
+					"\r",
+					"\r",
+					"if (pm.request.url.toString().includes(\"/alerts.json\")){\r",
+					"        pm.test(\"Validate alerts data fields and types\", () => {\r",
+					"            const jsonData = pm.response.json();\r",
+					"            pm.expect(jsonData).to.have.property(\"alerts\").and.to.be.an(\"object\");\r",
+					"\r",
+					"            const alerts = jsonData.alerts;     \r",
+					"            pm.expect(alerts).to.have.property(\"alert\").and.to.be.an(\"array\");\r",
+					"           \r",
+					"            const firstAlert = alerts.alert;\r",
+					"                // Loop over all forecast days\r",
+					"            firstAlert.forEach((alert1, index) => {\r",
+					"               ///console.log(`Validating day ${index + 1}`);\r",
+					"\r",
+					"                // Validate the \"day\" object\r",
+					"                pm.expect(alert1).to.have.property(\"headline\").and.to.be.a(\"string\");\r",
+					"                pm.expect(alert1).to.have.property(\"certainty\").and.to.be.a(\"string\");\r",
+					"                pm.expect(alert1).to.have.property(\"effective\").and.to.be.a(\"string\");\r",
+					"                pm.expect(alert1).to.have.property(\"instruction\").and.to.be.a(\"string\");\r",
+					"\r",
+					"            });\r",
+					"        });\r",
+					"}        \r",
+					"\r",
+					"\r",
+					"\r",
+					"/*if (pm.request.url.toString().includes(\"/current.json\")) {\r",
+					"\r",
+					"    pm.test(\"Validate current weather data fields and types\", function () {\r",
+					"\r",
+					"    const jsonData = pm.response.json(); // Parse the response as JSON\r",
+					"\r",
+					"    // Ensure the \"current\" object exists\r",
+					"    pm.expect(jsonData).to.have.property(\"current\");\r",
+					"    const current = jsonData.current;\r",
+					"\r",
+					"    // Field validation definitions\r",
+					"    const validations = [\r",
+					"        { field: \"last_updated\", type: \"string\" },\r",
+					"        { field: \"last_updated_epoch\", type: \"number\" },\r",
+					"        { field: \"temp_c\", type: \"number\" },\r",
+					"        { field: \"temp_f\", type: \"number\" },\r",
+					"        { field: \"feelslike_c\", type: \"number\" },\r",
+					"        { field: \"feelslike_f\", type: \"number\" },\r",
+					"        { field: \"windchill_c\", type: \"number\" },\r",
+					"        { field: \"windchill_f\", type: \"number\" },\r",
+					"        { field: \"heatindex_c\", type: \"number\" },\r",
+					"        { field: \"heatindex_f\", type: \"number\" },\r",
+					"        { field: \"dewpoint_c\", type: \"number\" },\r",
+					"        { field: \"dewpoint_f\", type: \"number\" },\r",
+					"        { field: \"condition.text\", type: \"string\" },\r",
+					"        { field: \"condition.icon\", type: \"string\" },\r",
+					"        { field: \"condition.code\", type: \"number\" },\r",
+					"        { field: \"wind_mph\", type: \"number\" },\r",
+					"        { field: \"wind_kph\", type: \"number\" },\r",
+					"        { field: \"wind_degree\", type: \"number\" },\r",
+					"        { field: \"wind_dir\", type: \"string\" },\r",
+					"        { field: \"pressure_mb\", type: \"number\" },\r",
+					"        { field: \"pressure_in\", type: \"number\" },\r",
+					"        { field: \"precip_mm\", type: \"number\" },\r",
+					"        { field: \"precip_in\", type: \"number\" },\r",
+					"        { field: \"humidity\", type: \"number\" },\r",
+					"        { field: \"cloud\", type: \"number\" },\r",
+					"        { field: \"is_day\", type: \"number\" },\r",
+					"        { field: \"uv\", type: \"number\" },\r",
+					"        { field: \"gust_mph\", type: \"number\" },\r",
+					"        { field: \"gust_kph\", type: \"number\" }\r",
+					"    ];\r",
+					"\r",
+					"    // Loop through each validation rule\r",
+					"    validations.forEach(({ field, type }) => {\r",
+					"        const keys = field.split(\".\"); // Handle nested properties like \"condition.text\"\r",
+					"        let value = current;\r",
+					"\r",
+					"        // Traverse nested fields\r",
+					"        keys.forEach(key => {\r",
+					"            console.log(key)\r",
+					"            pm.expect(value).to.have.property(key, `Missing property: ${field}`);\r",
+					"            \r",
+					"            value = value[key];\r",
+					"        });\r",
+					"\r",
+					"        // Check data type\r",
+					"        pm.expect(value).to.be.a(type, `${field} should be of type ${type}`);\r",
+					"    });\r",
+					"\r",
+					"    pm.test(\"All fields are validated successfully\", () => {\r",
+					"        pm.expect(true).to.be.true; // Passes if all validations succeed\r",
+					"    });\r",
+					"});\r",
+					"}*/"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_KEY",
+			"value": "246757764ea14093a7b133411242312",
+			"type": "string"
+		},
+		{
+			"key": "Base_URL",
+			"value": "http://api.weatherapi.com/v1",
+			"type": "string"
+		},
+		{
+			"key": "Unauthorized",
+			"value": ""
+		},
+		{
+			"key": "location",
+			"value": ""
+		},
+		{
+			"key": "Bad_Request",
+			"value": ""
+		},
+		{
+			"key": "Forbidden",
+			"value": ""
+		},
+		{
+			"key": "Invalid_Key",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "No_Location_Found",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
